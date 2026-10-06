@@ -1,0 +1,66 @@
+name: Claude usage window ping
+
+on:
+  schedule:
+    # 30分ごと、JST 05:00〜19:30 (UTC 20:00〜10:30)。実際に ping するかは scripts/ping.py が判定する
+    - cron: "5,35 20-23 * * *"
+    - cron: "5,35 0-10 * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "時間判定を無視して今すぐ ping する"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: claude-ping
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TIMEZONE: ${{ vars.TIMEZONE }}
+      FIRST_PING_TIME: ${{ vars.FIRST_PING_TIME }}
+      LAST_PING_TIME: ${{ vars.LAST_PING_TIME }}
+      MAX_PINGS_PER_DAY: ${{ vars.MAX_PINGS_PER_DAY }}
+      MARGIN_MINUTES: ${{ vars.MARGIN_MINUTES }}
+      ACTIVE_DAYS: ${{ vars.ACTIVE_DAYS }}
+      PING_MODEL: ${{ vars.PING_MODEL }}
+      FORCE: ${{ inputs.force }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check schedule
+        id: check
+        run: python3 scripts/ping.py --check
+
+      - uses: actions/setup-node@v4
+        if: steps.check.outputs.should_ping == 'true'
+        with:
+          node-version: 20
+
+      - name: Install Claude Code
+        if: steps.check.outputs.should_ping == 'true'
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Send ping
+        if: steps.check.outputs.should_ping == 'true'
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: python3 scripts/ping.py
+
+      - name: Commit state
+        if: steps.check.outputs.should_ping == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add state/last_ping.json
+          git diff --cached --quiet && exit 0
+          git commit -m "chore: record ping $(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M') [skip ci]"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
