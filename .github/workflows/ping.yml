@@ -29,6 +29,7 @@ jobs:
       LAST_PING_TIME: ${{ vars.LAST_PING_TIME }}
       MAX_PINGS_PER_DAY: ${{ vars.MAX_PINGS_PER_DAY }}
       MARGIN_MINUTES: ${{ vars.MARGIN_MINUTES }}
+      MAX_WAIT_MINUTES: ${{ vars.MAX_WAIT_MINUTES }}
       ACTIVE_DAYS: ${{ vars.ACTIVE_DAYS }}
       PING_MODEL: ${{ vars.PING_MODEL }}
       FORCE: ${{ inputs.force }}

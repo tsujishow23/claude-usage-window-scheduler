@@ -61,8 +61,6 @@ Settings → Secrets and variables → Actions → **Variables** で上書きで
 | `PING_MODEL` | `haiku` | ping に使うモデル |
 | `TIMEZONE` | `Asia/Tokyo` | タイムゾーン |
 
-※ `MAX_WAIT_MINUTES` はワークフローに渡していないため、変更する場合は `ping.yml` の `env` に追記してください。
-
 ## 注意点
 
 - **GitHub Actions の cron は数分〜数十分遅れることがあります。** 遅れても前回成功時刻を基準に次を計算するので、3枠が 10–19時に収まるよう余裕を持たせています。
