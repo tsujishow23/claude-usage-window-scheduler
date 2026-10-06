@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import sys
 import time as time_module
@@ -79,10 +80,18 @@ def decide(now: datetime, state: dict) -> tuple[bool, str, timedelta]:
     return False, f"次の ping は {due:%H:%M} 以降", timedelta()
 
 
+def clean_env() -> dict:
+    # ターミナルからコピーしたトークンに混ざりがちな改行・空白・枠線文字を取り除く
+    env_vars = dict(os.environ)
+    token = env_vars.get("CLAUDE_CODE_OAUTH_TOKEN", "")
+    env_vars["CLAUDE_CODE_OAUTH_TOKEN"] = re.sub(r"[^A-Za-z0-9_-]", "", token)
+    return env_vars
+
+
 def send_ping() -> bool:
     cmd = ["claude", "-p", PROMPT, "--model", MODEL, "--max-turns", "1", "--output-format", "json"]
     try:
-        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=180)
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=180, env=clean_env())
     except (subprocess.TimeoutExpired, FileNotFoundError) as e:
         print(f"ping 失敗: {e}")
         return False
