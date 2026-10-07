@@ -31,7 +31,7 @@ def env(name: str, default: str) -> str:
 
 TZ = ZoneInfo(env("TIMEZONE", "Asia/Tokyo"))
 FIRST_PING_TIME = time.fromisoformat(env("FIRST_PING_TIME", "07:00"))
-LAST_PING_TIME = time.fromisoformat(env("LAST_PING_TIME", "18:50"))
+LAST_PING_TIME = time.fromisoformat(env("LAST_PING_TIME", "18:59"))
 WINDOW = timedelta(hours=float(env("WINDOW_HOURS", "5")))
 MARGIN = timedelta(minutes=int(env("MARGIN_MINUTES", "2")))
 # 次の ping 時刻がこの分数以内なら、次の cron を待たずにジョブ内で待機して時刻ぴったりに送る

@@ -53,7 +53,7 @@ Settings → Secrets and variables → Actions → **Variables** で上書きで
 | 変数 | 既定値 | 説明 |
 |---|---|---|
 | `FIRST_PING_TIME` | `07:00` | 1回目の ping を送る時刻。05:01〜08:59 なら 10–19時に3枠入る。早いほど1枠目が短く3枠目が長くなる |
-| `LAST_PING_TIME` | `18:50` | これ以降は ping しない |
+| `LAST_PING_TIME` | `18:59` | これ以降は ping しない |
 | `MAX_PINGS_PER_DAY` | `3` | 1日の最大 ping 回数 |
 | `MARGIN_MINUTES` | `2` | 5時間に足す余裕（分） |
 | `MAX_WAIT_MINUTES` | `15` | 次の ping 時刻がこの分数以内ならジョブ内で待機する |
