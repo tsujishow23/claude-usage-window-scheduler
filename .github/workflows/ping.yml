@@ -2,9 +2,9 @@ name: Claude usage window ping
 
 on:
   schedule:
-    # 30分ごと、JST 05:00〜19:30 (UTC 20:00〜10:30)。実際に ping するかは scripts/ping.py が判定する
-    - cron: "5,35 20-23 * * *"
-    - cron: "5,35 0-10 * * *"
+    # 15分ごと、JST 05:00〜19:45 (UTC 20:00〜10:45)。実際に ping するかは scripts/ping.py が判定する
+    - cron: "5,20,35,50 20-23 * * *"
+    - cron: "5,20,35,50 0-10 * * *"
   workflow_dispatch:
     inputs:
       force:
